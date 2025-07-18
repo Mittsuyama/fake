@@ -1,41 +1,43 @@
-import { CircleCheckBig, CurrencyIcon } from 'lucide-react';
+import { CircleCheckBig } from 'lucide-react';
 import { ROLE_LIST } from '@/assets/avatar';
 import { Button } from '@/components/Button';
+import { Cubic, CUBIC_LIST, genKey } from '@/components/Planet';
 import curveLeftSrc from '@/assets/landing-page/curve-left.png';
 import curveRightSrc from '@/assets/landing-page/curve-right.png';
-import cubicGreenImgSrc from '@/assets/landing-page/cubic-green.png';
-import cubicYellowGreenImgSrc from '@/assets/landing-page/cubic-yellow-green.png';
-import cubicBlueGreenImgSrc from '@/assets/landing-page/cubic-blue-green.png';
-import secondScreenBgSrc from '@/assets/landing-page/second-screen-bg.png';
 
 import {
   DOOR_HEIGHT,
   DOOR_WIDTH,
   NAME_OPACITY_START,
   DOOR_TOP_OFFSET,
+  FLOAT_ANIMATION_DURATION,
+  FLOAT_TOP_OFFSET_LIST,
 } from './common';
 import styles from './landing-page.module.less';
-import { Cubic, CUBIC_LIST } from '@/components/Planet';
 
 interface SecondScreenProps {
-  scrollRate: number;
+  rawScrollRate: number;
   doorWrapEl?: HTMLDivElement;
   setDoorWrapEl: (el: HTMLDivElement) => void;
   setSecondEl: (el: HTMLDivElement) => void;
   roleListHeight?: number;
   roleSelectHeight: number;
   setRoleSelectHeight: (height: number) => void;
+  floatAnimationTik?: boolean;
 }
 
 export const SecondScreen = (props: SecondScreenProps) => {
   const {
-    scrollRate,
+    rawScrollRate,
     doorWrapEl,
     setDoorWrapEl,
     setSecondEl,
     roleSelectHeight,
     setRoleSelectHeight,
+    floatAnimationTik,
   } = props;
+
+  const scrollRate = Math.min(1, rawScrollRate);
 
   const opacity =
     scrollRate < NAME_OPACITY_START
@@ -76,11 +78,6 @@ export const SecondScreen = (props: SecondScreenProps) => {
                   ? `translate(-${25 * scrollRate + 25}%, -${50 - scrollRate * 50}%)`
                   : 'unset',
               zIndex: 3,
-              // borderRadius: 24 * (1 - scrollRate),
-              // background: `color-mix(in oklab, var(--background) ${100 * (1 - scrollRate)}%, transparent)`,
-              // background: 'var(--background)',
-              // background: `linear-gradient(to bottom, var(--background) 50%, color-mix(in oklab, var(--background) ${100 * (1 - scrollRate)}%, transparent))`,
-              // overflow: 'hidden',
             }}
           >
             <div
@@ -171,11 +168,8 @@ export const SecondScreen = (props: SecondScreenProps) => {
               borderRadius: 24,
             }}
           >
-            <div className="w-full text-2xl font-bold mb-2">
+            <div className="w-full text-2xl font-bold mb-12">
               即刻构建你的法律 AI 私人顾问团
-            </div>
-            <div className="w-full text-md text-secondary mb-12">
-              AI 法律顾问团队多角度审核，让风险无处遁形
             </div>
             <div className="w-full text-md flex items-center gap-8 mb-12">
               <div>
@@ -189,6 +183,7 @@ export const SecondScreen = (props: SecondScreenProps) => {
               <div className="flex gap-2">
                 {ROLE_LIST.filter((item) => item.selected).map(({ avatar }) => (
                   <img
+                    key={avatar}
                     src={avatar}
                     className="w-12 h-12 rounded-full overflow-hidden"
                   />
@@ -198,14 +193,17 @@ export const SecondScreen = (props: SecondScreenProps) => {
             <div className="flex justify-between">
               <div className="flex gap-4">
                 <Button variant="outline" size="lg">
+                  合同审查
+                </Button>
+                <Button variant="outline" size="lg">
                   法律咨询
                 </Button>
                 <Button variant="outline" size="lg">
-                  合同审查
+                  构建我的私人顾问团
                 </Button>
               </div>
               <Button size="lg" variant="primary">
-                构建我的私人顾问团
+                下一步
               </Button>
             </div>
           </div>
@@ -243,8 +241,15 @@ export const SecondScreen = (props: SecondScreenProps) => {
         className="absolute w-[400px] -translate-x-1/12 -translate-y-1/2 top-[calc(50%)] left-[calc(50%)]"
         src={curveRightSrc}
       />
-      {CUBIC_LIST.map((props) => (
-        <Cubic {...props} />
+      {CUBIC_LIST.map((props, index) => (
+        <Cubic
+          {...props}
+          key={genKey(props)}
+          style={{
+            transitionDuration: `${FLOAT_ANIMATION_DURATION / 1000}s`,
+            transform: `translate(-50%, ${floatAnimationTik ? FLOAT_TOP_OFFSET_LIST[index % FLOAT_TOP_OFFSET_LIST.length] : 0}px) rotate(${props.rotate}deg)`,
+          }}
+        />
       ))}
     </div>
   );

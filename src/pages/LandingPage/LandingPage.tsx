@@ -1,29 +1,36 @@
 import { memo, useEffect, useRef, useState, type UIEventHandler } from 'react';
+import cls from 'classnames';
 import { useMemoizedFn } from 'ahooks';
 import { Navigation } from '@/components/Navigation';
-import { WELCOME_MAX_WIDTH } from '@/constants/global';
 import firstScreenBgDarkSrc from '@/assets/landing-page/first-screen-bg-dark.png';
+import mixLightImgSrc from '@/assets/landing-page/mix-light.png';
+import mixDarkImgSrc from '@/assets/landing-page/mix-dark.png';
 import { useTheme } from '@/models/global';
 import {
-  Meteorolite,
-  METEOROLITE_LIST,
+  genKey,
+  Meteorite,
   Planet,
   PLANET_LIST,
+  FLOAT_ANIMATION_DURATION,
+  FLOAT_TOP_OFFSET_LIST,
 } from '@/components/Planet';
+import { useMeteoriteList } from '@/components/Planet/helper';
 
 import { FirstScreen } from './FirstScreen';
 import { SecondScreen } from './SecondScreen';
-import { ThirdScreen } from './thirdScreen';
+import { ThirdScreen } from './ThirdScreen';
 
 export const LandingPage = memo(() => {
   const theme = useTheme();
   const scrollWrapperRef = useRef<HTMLDivElement>(null);
   const [doorWrapEl, setDoorWrapEl] = useState<HTMLDivElement>();
   const [secondEl, setSecondEl] = useState<HTMLDivElement>();
-  const [scrollRate, setSrollRate] = useState(0);
+  const [rawScrollRate, setRawSrollRate] = useState(0);
   const [totalScrollTop, setTotalScrollTop] = useState(0);
   const [roleSelectHeight, setRoleSelectHeight] = useState(0);
-  console.log(totalScrollTop);
+
+  const [floatAnimationTik, setFloatAnimationTik] = useState(false);
+  const meteoriteList = useMeteoriteList();
 
   useEffect(() => {
     if (!secondEl) {
@@ -31,6 +38,27 @@ export const LandingPage = memo(() => {
     }
     setTotalScrollTop(secondEl.offsetTop);
   }, [secondEl]);
+
+  useEffect(() => {
+    let timer: number;
+
+    const tik = () => {
+      setFloatAnimationTik((pre) => !pre);
+      timer = window.setTimeout(() => {
+        tik();
+      }, FLOAT_ANIMATION_DURATION);
+    };
+
+    timer = window.setTimeout(() => {
+      tik();
+    }, 0);
+
+    return () => {
+      if (timer) {
+        window.clearTimeout(timer);
+      }
+    };
+  }, []);
 
   const onStart = useMemoizedFn(() => {
     scrollWrapperRef.current?.scrollTo({
@@ -41,7 +69,7 @@ export const LandingPage = memo(() => {
 
   const onScroll = useMemoizedFn<UIEventHandler<HTMLDivElement>>((e) => {
     const { scrollTop } = e.currentTarget;
-    setSrollRate(Math.min(scrollTop / totalScrollTop, 1));
+    setRawSrollRate(scrollTop / totalScrollTop);
   });
 
   return (
@@ -52,55 +80,49 @@ export const LandingPage = memo(() => {
         ref={scrollWrapperRef}
         onScroll={onScroll}
       >
-        <div
-          style={{
-            opacity: theme === 'light' ? 0.15 : 0.1,
-          }}
-          className="absolute w-full h-[2800px] bg-linear-150 from-primary-6 via-transparent to-transparent"
-        />
-        {PLANET_LIST.map((props) => (
+        {PLANET_LIST.map((props, index) => (
           <Planet
             {...props}
-            key={`${props.size}/${props.type}${props.left}/${props.top}`}
-            left={props.left * (1 + scrollRate * 1)}
+            key={genKey(props)}
+            style={{
+              transitionDuration: `${FLOAT_ANIMATION_DURATION / 1000}s`,
+              transform: `translate(-50%, ${floatAnimationTik ? FLOAT_TOP_OFFSET_LIST[index % FLOAT_TOP_OFFSET_LIST.length] : 0}px)`,
+            }}
           />
         ))}
-        {METEOROLITE_LIST.map((props) => (
-          <Meteorolite
+        {meteoriteList.map((props, index) => (
+          <Meteorite
             {...props}
-            key={`${props.size}/${props.type}/${props.left}/${props.top}`}
-            left={
-              props.left +
-              Math.cos(Math.PI * 1.3) *
-                scrollRate *
-                (props.style?.zIndex ? 1500 : 2000)
-            }
-            top={
-              props.top -
-              Math.sin(Math.PI * 1.3) *
-                scrollRate *
-                (props.style?.zIndex ? 1500 : 2000)
-            }
-            opacity={Math.max((Number(props.opacity) || 1) - scrollRate, 0)}
+            key={genKey(props)}
+            className={cls({
+              'animate-streak-across-1': index % 3 === 0,
+              'animate-streak-across-2': index % 3 === 1,
+              'animate-streak-across-3': index % 3 === 2,
+            })}
           />
         ))}
         <img
           className="absolute top-0 left-1/2 w-full -z-20 -translate-x-1/2"
           src={firstScreenBgDarkSrc}
         />
+        <img
+          src={theme === 'dark' ? mixDarkImgSrc : mixLightImgSrc}
+          className="absolute w-full top-0 left-0 opacity-25 dark:opacity-10 -z-30"
+        />
 
         <FirstScreen onStart={onStart} />
 
         <SecondScreen
-          scrollRate={scrollRate}
+          rawScrollRate={rawScrollRate}
           setSecondEl={setSecondEl}
           doorWrapEl={doorWrapEl}
           setDoorWrapEl={setDoorWrapEl}
           roleSelectHeight={roleSelectHeight}
           setRoleSelectHeight={setRoleSelectHeight}
+          floatAnimationTik={floatAnimationTik}
         />
 
-        <ThirdScreen />
+        <ThirdScreen floatAnimationTik={floatAnimationTik} />
       </div>
     </div>
   );

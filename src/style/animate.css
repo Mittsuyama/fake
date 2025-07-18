@@ -1,0 +1,120 @@
+@theme {
+  --animate-streak-across-1: streak-across-1 1s 0.25s linear forwards;
+  --animate-streak-across-2: streak-across-1 1s 0.5s linear forwards;
+  --animate-streak-across-3: streak-across-2 1s linear forwards;
+
+  @keyframes streak-across-1 {
+    0% {
+      transform: rotate(35deg) translateY(-1300px);
+      opacity: 0;
+    }
+    25% {
+      opacity: 0;
+    }
+    50% {
+      transform: rotate(35deg) translateY(0);
+      opacity: 1;
+    }
+    75% {
+      opacity: 0;
+    }
+    100% {
+      transform: rotate(35deg) translateY(1300px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes streak-across-2 {
+    0% {
+      transform: rotate(35deg) translateY(-1500px);
+      opacity: 0;
+    }
+    25% {
+      opacity: 0;
+    }
+    50% {
+      transform: rotate(35deg) translateY(0);
+      opacity: 0.8;
+    }
+    75% {
+      opacity: 0;
+    }
+    100% {
+      transform: rotate(35deg) translateY(1500px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes streak-across-3 {
+    0% {
+      transform: rotate(35deg) translateY(-1000px);
+      opacity: 0;
+    }
+    25% {
+      opacity: 0;
+    }
+    50% {
+      transform: rotate(35deg) translateY(0);
+      opacity: 0.9;
+    }
+    75% {
+      opacity: 0;
+    }
+    100% {
+      transform: rotate(35deg) translateY(1000px);
+      opacity: 0;
+    }
+  }
+
+  --animate-twinkle: twinkle 1.5s linear forwards;
+  @keyframes twinkle {
+    0%,
+    50%,
+    100% {
+      opacity: 1;
+    }
+    25%,
+    75% {
+      opacity: 0;
+    }
+  }
+
+  --animate-system-message-jump-in: system-message-jump-in 0.25s ease-in-out
+    forwards;
+  @keyframes system-message-jump-in {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0px);
+    }
+  }
+
+  --animate-user-message-jump-in: user-message-jump-in 0.25s ease-in-out
+    forwards;
+  @keyframes user-message-jump-in {
+    0% {
+      opacity: 0;
+      transform: translateX(10%) scale(90%);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(0) scale(100%);
+    }
+  }
+
+  --animate-user-message-left-jump-in: user-message-left-jump-in 0.25s
+    ease-in-out forwards;
+  @keyframes user-message-left-jump-in {
+    0% {
+      opacity: 0;
+      transform: translateX(-10%) scale(90%);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(0) scale(100%);
+    }
+  }
+}

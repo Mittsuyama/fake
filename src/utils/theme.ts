@@ -2,7 +2,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { themeAtom, themeModeAtom } from '@/models/global';
 import { useEffect } from 'react';
 
-export const useTheme = () => {
+export const useThemeUtils = () => {
   const [themeMode, setThemeMode] = useAtom(themeModeAtom);
   const theme = useAtomValue(themeAtom);
 

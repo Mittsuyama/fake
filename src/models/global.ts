@@ -4,7 +4,7 @@ import type { ThemeMode, ThemeType } from '@/types/global';
 
 export const themeModeAtom = atomWithStorage<ThemeMode>(
   'fake-theme-mode',
-  'auto',
+  'dark',
   undefined,
   {
     getOnInit: true,
@@ -25,3 +25,17 @@ export const themeAtom = atom((get) => {
 });
 
 export const useTheme = () => useAtomValue(themeAtom);
+
+export const tokenAtom = atomWithStorage<string | undefined>(
+  'token',
+  undefined,
+  undefined,
+  { getOnInit: true },
+);
+
+export const appMenuWiderAtom = atomWithStorage<boolean>(
+  'app-menu-wider',
+  false,
+  undefined,
+  { getOnInit: true },
+);

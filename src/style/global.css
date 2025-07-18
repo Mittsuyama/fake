@@ -1,13 +1,15 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+@font-face {
+  font-family: 'qualy';
+  src: url('../assets/font/Qualy.ttf');
+}
+
 @custom-variant dark (&:is(.dark *));
 
+@import './animate.css';
 @import './token.css';
-
-.test {
-  background: radial-gradient(var(--));
-}
 
 body,
 html,
@@ -21,8 +23,8 @@ html,
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  background: --background;
-  color: black;
+  background: var(--background);
+  color: var(--foreground);
 }
 
 * {
@@ -43,7 +45,7 @@ h1 {
   line-height: 1.1;
 }
 
-@font-face {
+/* @font-face {
   font-family: Sounso-Quality;
   src: url('assets/font/Sounso-Quality.ttf');
 }
@@ -51,34 +53,29 @@ h1 {
 @font-face {
   font-family: HFTerse;
   src: url('assets/fotn/HFTerse.ttf');
-}
-
-@font-face {
-  font-family: Qualy;
-  src: url('assets/font/Qualy.ttf');
-}
+} */
 
 *::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 *::-webkit-scrollbar-track {
   background: transparent;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 *:hover::-webkit-scrollbar-track {
-  background: #eee;
+  background: var(--background);
 }
 
 *::-webkit-scrollbar-thumb {
   background: transparent;
-  border-radius: 10px;
+  border-radius: 12px;
 }
 
 *:hover::-webkit-scrollbar-thumb {
-  background: #ddd;
+  background: color-mix(in oklab, var(--primary), transparent 80%);
 }
 
 *::-webkit-scrollbar-thumb:hover {
@@ -86,17 +83,9 @@ h1 {
 }
 
 *:hover::-webkit-scrollbar-thumb:hover {
-  background: #777;
+  background: color-mix(in oklab, var(--primary), transparent 60%);
 }
 
-:root[class='dark'] *:hover::-webkit-scrollbar-track {
-  background: rgb(16, 16, 16);
-}
-
-:root[class='dark'] *:hover::-webkit-scrollbar-thumb {
-  background: rgb(39, 39, 39);
-}
-
-:root[class='dark'] *:hover::-webkit-scrollbar-thumb:hover {
-  background: rgb(25, 25, 25);
+[data-sonner-toaster][data-sonner-theme='dark'] [data-description] {
+  color: #8b8b8b;
 }

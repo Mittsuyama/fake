@@ -1,53 +1,58 @@
-import { memo } from 'react';
+import { memo, type ReactEventHandler } from 'react';
+import cls from 'classnames';
 import fLogoSvgSrc from '@/assets/global/f-logo.svg';
 import fakeLogoSvgSrc from '@/assets/global/fake-logo.svg';
 
 interface LogoProps {
-  size?: number;
+  size?: 'large' | 'default';
   showName?: boolean;
+  className?: string;
+  onClick?: ReactEventHandler<HTMLDivElement>;
 }
 
-const LOGO_SCALE = 0.6;
 const FONT_SCALE = 0.7;
 
-export const BrandLogo = memo<LogoProps>((props) => {
-  const { size = 24, showName } = props;
+const sizeToPixel = (size: LogoProps['size']) => {
+  return size === 'large' ? 36 : 24;
+};
 
+export const BrandName = memo<Omit<LogoProps, 'showName'>>((props) => {
+  const { size = 'default', className } = props;
   return (
-    <div className="inline-flex justify-center items-center gap-2 text-foreground">
-      <img
-        style={{
-          width: size,
-          height: size,
-        }}
-        src={fLogoSvgSrc}
-      />
-      {showName && (
-        <img
-          style={{
-            height: size * FONT_SCALE,
-          }}
-          src={fakeLogoSvgSrc}
-        />
-      )}
-    </div>
+    <img
+      className={className}
+      style={{
+        height: sizeToPixel(size) * FONT_SCALE,
+      }}
+      src={fakeLogoSvgSrc}
+    />
   );
 });
 
-interface IconBranchLogoGhostProps {
-  size?: number;
-}
-
-export const IconBranchLogoGhost = memo<IconBranchLogoGhostProps>((props) => {
-  const { size = 20 } = props;
+export const BrandLogo = memo<LogoProps>((props) => {
+  const { size = 'default', showName, className, onClick } = props;
 
   return (
-    <img
-      style={{
-        width: size,
-        height: size,
-      }}
-      src={fLogoSvgSrc}
-    />
+    <div
+      className={cls(
+        'inline-flex justify-center items-center text-foreground',
+        {
+          'gap-2': size === 'default',
+          'gap-4': size === 'large',
+          'cursor-pointer': !!onClick,
+        },
+        className,
+      )}
+      onClick={onClick}
+    >
+      <img
+        style={{
+          width: sizeToPixel(size),
+          height: sizeToPixel(size),
+        }}
+        src={fLogoSvgSrc}
+      />
+      {showName && <BrandName size={size} />}
+    </div>
   );
 });
